@@ -1,0 +1,102 @@
+# Azure DevOps pipeline: validate, preview and deploy the landing zone.
+# Prerequisites:
+#   - An Azure Resource Manager service connection (workload identity federation recommended).
+#   - An environment named "landing-zone-dev" with an approval check.
+
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - infra/*
+      - pipelines/*
+
+pr:
+  branches:
+    include:
+      - main
+
+variables:
+  serviceConnection: 'Azure-Dev-Test'
+  location: 'westeurope'
+  templateFile: 'infra/main.bicep'
+  parametersFile: 'infra/main.bicepparam'
+  deploymentName: 'lz-$(Build.BuildId)'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: Validate
+    displayName: 'Lint, validate and what-if'
+    jobs:
+      - job: Validate
+        steps:
+          - task: AzureCLI@2
+            displayName: 'Bicep lint and build'
+            inputs:
+              azureSubscription: $(serviceConnection)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                set -euo pipefail
+                az bicep upgrade
+                az bicep lint --file $(templateFile)
+                az bicep build --file $(templateFile) --stdout > /dev/null
+                az bicep build-params --file $(parametersFile) --stdout > /dev/null
+
+          - task: AzureCLI@2
+            displayName: 'Validate deployment'
+            inputs:
+              azureSubscription: $(serviceConnection)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                set -euo pipefail
+                az deployment sub validate \
+                  --name $(deploymentName) \
+                  --location $(location) \
+                  --template-file $(templateFile) \
+                  --parameters $(parametersFile)
+
+          - task: AzureCLI@2
+            displayName: 'What-if'
+            inputs:
+              azureSubscription: $(serviceConnection)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                set -euo pipefail
+                az deployment sub what-if \
+                  --name $(deploymentName) \
+                  --location $(location) \
+                  --template-file $(templateFile) \
+                  --parameters $(parametersFile) \
+                  --result-format FullResourcePayloads
+
+  - stage: Deploy
+    displayName: 'Deploy to dev'
+    dependsOn: Validate
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - deployment: Deploy
+        environment: 'landing-zone-dev'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                - task: AzureCLI@2
+                  displayName: 'Deploy landing zone'
+                  inputs:
+                    azureSubscription: $(serviceConnection)
+                    scriptType: 'bash'
+                    scriptLocation: 'inlineScript'
+                    inlineScript: |
+                      set -euo pipefail
+                      az deployment sub create \
+                        --name $(deploymentName) \
+                        --location $(location) \
+                        --template-file $(templateFile) \
+                        --parameters $(parametersFile)

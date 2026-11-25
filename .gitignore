@@ -1,0 +1,10 @@
+# Compiled ARM templates
+*.json
+!bicepconfig.json
+
+# Local parameter overrides
+*.local.bicepparam
+
+# Editor
+.vscode/
+.DS_Store
