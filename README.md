@@ -18,35 +18,7 @@ Subscription-scope landing zone written in Bicep. It applies governance guardrai
 
 ## Architecture
 
-```mermaid
-flowchart TB
-    subgraph SUB["Azure subscription"]
-        direction TB
-        subgraph GOV["Governance"]
-            INIT["Initiative: Landing Zone Baseline"]
-            P1["Allowed locations"]
-            P2["Require tags on resource groups"]
-            P3["Inherit tags if missing (Modify)"]
-            P4["Restrict public IP (custom)"]
-            INIT --> P1 & P2 & P3 & P4
-        end
-        subgraph IAM["Delegated administration"]
-            ROLE["Custom role: Landing Zone Operator"]
-            RA["Role assignments to Entra ID groups"]
-            PIM["PIM eligible assignments"]
-        end
-        subgraph COST["Cost Management"]
-            BUD["Monthly budget<br/>actual 50 / 80 / 100 %<br/>forecast 100 %"]
-        end
-        subgraph RG["rg-lz-management-dev"]
-            LAW["Log Analytics workspace"]
-        end
-        ACT["Activity Log"] --> LAW
-    end
-    ENTRA["Microsoft Entra ID groups"] --> RA
-    ENTRA --> PIM
-    ADO["Azure DevOps pipeline<br/>lint, validate, what-if, approval, deploy"] --> SUB
-```
+![Azure Landing Zone with Bicep architecture](docs/architecture.svg)
 
 ## Design decisions
 
@@ -63,6 +35,7 @@ flowchart TB
 ```text
 .
 ├── bicepconfig.json                 Linter rules
+├── docs/architecture.svg            Architecture diagram
 ├── infra
 │   ├── main.bicep                   Entry point (subscription scope)
 │   ├── main.bicepparam              Example parameters

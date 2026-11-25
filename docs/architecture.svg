@@ -1,0 +1,236 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="700" viewBox="0 0 960 700" font-family="'Segoe UI', 'Open Sans', Helvetica, Arial, sans-serif">
+  <title>Azure Landing Zone with Bicep - architecture</title>
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0B2A4A" flood-opacity="0.18"/>
+    </filter>
+    <linearGradient id="azure" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3CCBF4"/>
+      <stop offset="1" stop-color="#0078D4"/>
+    </linearGradient>
+    <linearGradient id="entra" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3CCBF4"/>
+      <stop offset="1" stop-color="#5C2D91"/>
+    </linearGradient>
+    <linearGradient id="key" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFD43B"/>
+      <stop offset="1" stop-color="#F2A900"/>
+    </linearGradient>
+    <linearGradient id="budget" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6BB700"/>
+      <stop offset="0.55" stop-color="#FFB900"/>
+      <stop offset="0.85" stop-color="#F7630C"/>
+      <stop offset="1" stop-color="#D13438"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0078D4"/>
+    </marker>
+    <marker id="arrowPurple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5C2D91"/>
+    </marker>
+
+    <!-- Icons -->
+    <g id="i-entra">
+      <path d="M14 1 L27 21 L14 27 L1 21 Z" fill="url(#entra)"/>
+      <path d="M14 1 L14 27 L1 21 Z" fill="#FFFFFF" opacity="0.25"/>
+    </g>
+    <g id="i-devops">
+      <rect x="0" y="0" width="28" height="28" rx="6" fill="url(#azure)"/>
+      <path d="M7 19 V10 L14 6 L21 10 V19 L14 23 Z" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linejoin="round"/>
+      <circle cx="14" cy="14.5" r="3" fill="#FFFFFF"/>
+    </g>
+    <g id="i-bicep">
+      <rect x="0" y="0" width="28" height="28" rx="6" fill="#243A5E"/>
+      <path d="M8 9 L5 14 L8 19 M20 9 L23 14 L20 19 M16 7 L12 21" fill="none" stroke="#50E6FF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <g id="i-key">
+      <circle cx="9" cy="14" r="7.5" fill="url(#key)"/>
+      <circle cx="9" cy="14" r="2.6" fill="#FFFFFF"/>
+      <path d="M15 12 H27 V16 H24 V19 H21 V16 H15 Z" fill="url(#key)"/>
+    </g>
+    <g id="i-policy">
+      <path d="M3 1 H19 L25 7 V27 H3 Z" fill="url(#azure)"/>
+      <path d="M19 1 V7 H25 Z" fill="#FFFFFF" opacity="0.45"/>
+      <path d="M8 16 L12.5 20.5 L20 12" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <g id="i-people">
+      <circle cx="10" cy="9" r="5" fill="#5C2D91"/>
+      <path d="M1 25 C1 17 19 17 19 25 Z" fill="#5C2D91"/>
+      <circle cx="19" cy="8" r="4.2" fill="#8661C5"/>
+      <path d="M13 21 C14 15 27 15 27 22 Z" fill="#8661C5"/>
+    </g>
+    <g id="i-cost">
+      <circle cx="14" cy="14" r="13" fill="#107C10"/>
+      <circle cx="14" cy="14" r="9.5" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.5"/>
+      <text x="14" y="19.5" text-anchor="middle" font-size="15" font-weight="700" fill="#FFFFFF">€</text>
+    </g>
+    <g id="i-monitor">
+      <rect x="0" y="0" width="28" height="28" rx="6" fill="url(#azure)"/>
+      <rect x="6" y="15" width="4" height="7" rx="1" fill="#FFFFFF"/>
+      <rect x="12" y="10" width="4" height="12" rx="1" fill="#FFFFFF"/>
+      <rect x="18" y="6" width="4" height="16" rx="1" fill="#FFFFFF"/>
+    </g>
+    <g id="i-shield">
+      <path d="M9 1 L17 4 V10 C17 15 13.5 18 9 19.5 C4.5 18 1 15 1 10 V4 Z" fill="#5C2D91"/>
+      <path d="M5.5 10 L8 12.5 L12.5 7.5" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <g id="i-clock">
+      <circle cx="9" cy="10" r="8.5" fill="#5C2D91"/>
+      <path d="M9 5 V10 L12.5 12" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+    </g>
+    <g id="i-role">
+      <circle cx="9" cy="6" r="4.5" fill="#5C2D91"/>
+      <path d="M1 19 C1 11 17 11 17 19 Z" fill="#5C2D91"/>
+    </g>
+    <g id="i-log">
+      <rect x="0" y="0" width="22" height="22" rx="4" fill="#E8F3FC" stroke="#0078D4" stroke-width="1.2"/>
+      <path d="M5 7 H17 M5 11 H17 M5 15 H13" stroke="#0078D4" stroke-width="1.8" stroke-linecap="round"/>
+    </g>
+  </defs>
+
+  <!-- Canvas -->
+  <rect width="960" height="700" rx="16" fill="#EAF0F6" stroke="#C8D6E5"/>
+
+  <!-- Top row: Entra ID, Bicep, Azure DevOps -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="24" width="270" height="70" rx="10" fill="#FFFFFF" stroke="#D9CFEA"/>
+    <rect x="345" y="24" width="270" height="70" rx="10" fill="#FFFFFF" stroke="#D0DCEA"/>
+    <rect x="650" y="24" width="270" height="70" rx="10" fill="#FFFFFF" stroke="#C7E0F4"/>
+  </g>
+  <use href="#i-entra" x="58" y="45"/>
+  <text x="98" y="54" font-size="15" font-weight="600" fill="#243A5E">Microsoft Entra ID</text>
+  <text x="98" y="74" font-size="12" fill="#605E5C">Groups, users, privileged roles</text>
+
+  <use href="#i-bicep" x="363" y="45"/>
+  <text x="403" y="54" font-size="15" font-weight="600" fill="#243A5E">Bicep templates</text>
+  <text x="403" y="74" font-size="12" fill="#605E5C">Typed parameters, modules</text>
+
+  <use href="#i-devops" x="668" y="45"/>
+  <text x="708" y="54" font-size="15" font-weight="600" fill="#243A5E">Azure DevOps pipeline</text>
+  <text x="708" y="74" font-size="12" fill="#605E5C">Lint, validate, what-if, approve</text>
+
+  <path d="M615 59 H646" stroke="#0078D4" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Subscription container -->
+  <rect x="24" y="126" width="912" height="556" rx="14" fill="#D6E8F8" stroke="#0078D4" stroke-width="1.6"/>
+  <use href="#i-key" x="44" y="138"/>
+  <text x="82" y="158" font-size="16" font-weight="700" fill="#243A5E">Azure subscription</text>
+
+  <g font-size="11.5" font-weight="600" fill="#0078D4">
+    <rect x="626" y="141" width="62" height="24" rx="12" fill="#FFFFFF" stroke="#9CCBEE"/>
+    <text x="657" y="157" text-anchor="middle">Owner</text>
+    <rect x="696" y="141" width="88" height="24" rx="12" fill="#FFFFFF" stroke="#9CCBEE"/>
+    <text x="740" y="157" text-anchor="middle">CostCenter</text>
+    <rect x="792" y="141" width="96" height="24" rx="12" fill="#FFFFFF" stroke="#9CCBEE"/>
+    <text x="840" y="157" text-anchor="middle">Environment</text>
+  </g>
+  <text x="905" y="157" font-size="11" fill="#605E5C" text-anchor="middle">tags</text>
+
+  <!-- Flows from top row -->
+  <path d="M290 94 V186" stroke="#5C2D91" stroke-width="2" fill="none" stroke-dasharray="5 4" marker-end="url(#arrowPurple)"/>
+  <path d="M785 94 V112 H600 V186" stroke="#0078D4" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  <text x="793" y="111" font-size="11" fill="#0078D4" font-weight="600">az deployment sub create</text>
+
+  <!-- Cards -->
+  <g filter="url(#shadow)">
+    <rect x="44" y="190" width="426" height="234" rx="10" fill="#FFFFFF" stroke="#B9CCE0"/>
+    <rect x="490" y="190" width="426" height="234" rx="10" fill="#FFFFFF" stroke="#B9CCE0"/>
+    <rect x="44" y="440" width="426" height="226" rx="10" fill="#FFFFFF" stroke="#B9CCE0"/>
+    <rect x="490" y="440" width="426" height="226" rx="10" fill="#FFFFFF" stroke="#B9CCE0"/>
+  </g>
+  <path d="M44 200 a10 10 0 0 1 10 -10 H460 a10 10 0 0 1 10 10 V194 H44 Z" fill="#5C2D91"/>
+  <path d="M490 200 a10 10 0 0 1 10 -10 H906 a10 10 0 0 1 10 10 V194 H490 Z" fill="#0078D4"/>
+  <path d="M44 450 a10 10 0 0 1 10 -10 H460 a10 10 0 0 1 10 10 V444 H44 Z" fill="#107C10"/>
+  <path d="M490 450 a10 10 0 0 1 10 -10 H906 a10 10 0 0 1 10 10 V444 H490 Z" fill="#008575"/>
+
+  <!-- Card 1: Delegated administration -->
+  <use href="#i-people" x="62" y="208"/>
+  <text x="102" y="222" font-size="15" font-weight="700" fill="#243A5E">Delegated administration</text>
+  <text x="102" y="240" font-size="12" fill="#605E5C">Least privilege, no standing access</text>
+
+  <rect x="62" y="258" width="390" height="46" rx="8" fill="#F5F1FA"/>
+  <use href="#i-shield" x="76" y="271"/>
+  <text x="106" y="277" font-size="13" font-weight="600" fill="#243A5E">Custom role: Landing Zone Operator</text>
+  <text x="106" y="294" font-size="11.5" fill="#605E5C">Operations without Microsoft.Authorization writes</text>
+
+  <rect x="62" y="310" width="390" height="46" rx="8" fill="#F5F1FA"/>
+  <use href="#i-role" x="76" y="323"/>
+  <text x="106" y="329" font-size="13" font-weight="600" fill="#243A5E">RBAC assignments to Entra ID groups</text>
+  <text x="106" y="346" font-size="11.5" fill="#605E5C">Reader, Contributor, Network, Cost, Monitoring</text>
+
+  <rect x="62" y="362" width="390" height="46" rx="8" fill="#F5F1FA"/>
+  <use href="#i-clock" x="76" y="374"/>
+  <text x="106" y="381" font-size="13" font-weight="600" fill="#243A5E">PIM eligible assignments</text>
+  <text x="106" y="398" font-size="11.5" fill="#605E5C">Owner and User Access Administrator, just-in-time</text>
+
+  <!-- Card 2: Governance -->
+  <use href="#i-policy" x="508" y="208"/>
+  <text x="548" y="222" font-size="15" font-weight="700" fill="#243A5E">Governance with Azure Policy</text>
+  <text x="548" y="240" font-size="12" fill="#605E5C">One initiative, one assignment, one compliance view</text>
+
+  <rect x="508" y="256" width="390" height="34" rx="17" fill="#0078D4"/>
+  <text x="703" y="278" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">Initiative: Landing Zone Baseline</text>
+  <path d="M600 290 V302 M806 290 V302" stroke="#9CCBEE" stroke-width="2"/>
+
+  <g>
+    <rect x="508" y="302" width="186" height="52" rx="8" fill="#EFF6FC" stroke="#C7E0F4"/>
+    <text x="522" y="324" font-size="13" font-weight="600" fill="#243A5E">Allowed locations</text>
+    <text x="522" y="342" font-size="11.5" fill="#605E5C">West and North Europe</text>
+
+    <rect x="712" y="302" width="186" height="52" rx="8" fill="#EFF6FC" stroke="#C7E0F4"/>
+    <text x="726" y="324" font-size="13" font-weight="600" fill="#243A5E">Required tags</text>
+    <text x="726" y="342" font-size="11.5" fill="#605E5C">Deny on resource groups</text>
+
+    <rect x="508" y="362" width="186" height="52" rx="8" fill="#EFF6FC" stroke="#C7E0F4"/>
+    <text x="522" y="384" font-size="13" font-weight="600" fill="#243A5E">Tag inheritance</text>
+    <text x="522" y="402" font-size="11.5" fill="#605E5C">Modify, with remediation</text>
+
+    <rect x="712" y="362" width="186" height="52" rx="8" fill="#EFF6FC" stroke="#C7E0F4"/>
+    <text x="726" y="384" font-size="13" font-weight="600" fill="#243A5E">Restrict public IP</text>
+    <text x="726" y="402" font-size="11.5" fill="#605E5C">Custom, Audit or Deny</text>
+  </g>
+
+  <!-- Card 3: Cost Management -->
+  <use href="#i-cost" x="62" y="458"/>
+  <text x="102" y="472" font-size="15" font-weight="700" fill="#243A5E">Cost Management</text>
+  <text x="102" y="490" font-size="12" fill="#605E5C">FinOps guardrail from day one</text>
+
+  <text x="62" y="530" font-size="13" font-weight="600" fill="#243A5E">Monthly subscription budget</text>
+  <text x="452" y="530" font-size="12" fill="#605E5C" text-anchor="end">actual and forecast alerts</text>
+
+  <rect x="62" y="560" width="390" height="14" rx="7" fill="url(#budget)"/>
+  <g font-size="11.5" font-weight="600" fill="#243A5E" text-anchor="middle">
+    <path d="M257 552 V582" stroke="#243A5E" stroke-width="2"/>
+    <text x="257" y="548">50 %</text>
+    <path d="M374 552 V582" stroke="#243A5E" stroke-width="2"/>
+    <text x="374" y="548">80 %</text>
+    <path d="M451 552 V582" stroke="#243A5E" stroke-width="2"/>
+    <text x="438" y="548">100 %</text>
+  </g>
+  <path d="M451 586 V598" stroke="#D13438" stroke-width="2" stroke-dasharray="3 3"/>
+  <text x="451" y="614" font-size="11.5" fill="#D13438" font-weight="600" text-anchor="end">Forecast 100 %</text>
+  <text x="62" y="614" font-size="11.5" fill="#605E5C">Email alerts to the FinOps team</text>
+  <text x="62" y="646" font-size="11.5" fill="#605E5C">Microsoft.Consumption/budgets</text>
+
+  <!-- Card 4: Monitoring -->
+  <use href="#i-monitor" x="508" y="458"/>
+  <text x="548" y="472" font-size="15" font-weight="700" fill="#243A5E">Central logging</text>
+  <text x="548" y="490" font-size="12" fill="#605E5C">Audit trail for every administrative change</text>
+
+  <rect x="508" y="522" width="150" height="74" rx="8" fill="#EFF6FC" stroke="#C7E0F4"/>
+  <use href="#i-log" x="522" y="534"/>
+  <text x="552" y="550" font-size="13" font-weight="600" fill="#243A5E">Activity Log</text>
+  <text x="522" y="574" font-size="11" fill="#605E5C">Administrative, Security,</text>
+  <text x="522" y="588" font-size="11" fill="#605E5C">Policy, Service Health</text>
+
+  <path d="M658 559 H690" stroke="#0078D4" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="694" y="508" width="204" height="102" rx="10" fill="none" stroke="#008575" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="706" y="526" font-size="11" font-weight="600" fill="#008575">rg-lz-management-dev</text>
+  <rect x="706" y="534" width="180" height="62" rx="8" fill="#FFFFFF" stroke="#C7E0F4"/>
+  <use href="#i-monitor" x="718" y="546"/>
+  <text x="754" y="560" font-size="13" font-weight="600" fill="#243A5E">Log Analytics</text>
+  <text x="754" y="577" font-size="11.5" fill="#605E5C">workspace</text>
+
+  <text x="508" y="646" font-size="11.5" fill="#605E5C">30-day retention, 1 GB daily cap, resource-context access</text>
+</svg>
